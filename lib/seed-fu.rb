@@ -10,10 +10,17 @@ module SeedFu
   autoload :Runner,                'seed-fu/runner'
   autoload :Writer,                'seed-fu/writer'
 
-  mattr_accessor :quiet
+  mattr_accessor :quiet, :silence
 
-  # Set `SeedFu.quiet = true` to silence all output
+  # Set `SeedFu.quiet = true` to silence each seeded record output
   @@quiet = false
+
+  # Set `SeedFu.silence = true` to silence all output
+  @@silence = false
+
+  mattr_accessor :io
+
+  @@io = STDOUT
 
   mattr_accessor :fixture_paths
 
@@ -27,6 +34,10 @@ module SeedFu
   # @param [Regexp] filter If given, only filenames matching this expression will be loaded
   def self.seed(fixture_paths = SeedFu.fixture_paths, filter = nil)
     Runner.new(fixture_paths, filter).run
+  end
+
+  def self.puts message
+    io.respond_to?(:warn) ? io.warn(message) : io.puts(message)
   end
 end
 

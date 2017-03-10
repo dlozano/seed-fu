@@ -14,7 +14,8 @@ module SeedFu
     # @param [Array<Hash>] data Each item in this array is a hash containing attributes for a
     #   particular record.
     # @param [Hash] options
-    # @option options [Boolean] :quiet (SeedFu.quiet) If true, output will be silenced
+    # @option options [Boolean] :quiet (SeedFu.quiet) If true, each record output will be silenced
+    # @option options [Boolean] :silence (SeedFu.quiet) If true, all output will be silenced
     # @option options [Boolean] :insert_only (false) If true then existing records which match the
     #   constraints will not be updated, even if the seed data has changed
     def initialize(model_class, constraints, data, options = {})
@@ -24,6 +25,7 @@ module SeedFu
       @options     = options.symbolize_keys
 
       @options[:quiet] ||= SeedFu.quiet
+      @options[:silence] ||= SeedFu.silence
 
       validate_constraints!
       validate_data!
@@ -62,7 +64,7 @@ module SeedFu
         record = find_or_initialize_record(data)
         return if @options[:insert_only] && !record.new_record?
 
-        puts " - #{@model_class} #{data.inspect}" unless @options[:quiet]
+        SeedFu.puts " - #{@model_class} #{data.inspect}" unless @options[:quiet]
 
         # Rails 3 or Rails 4 + rails/protected_attributes
         if record.class.respond_to?(:protected_attributes) && record.class.respond_to?(:accessible_attributes)

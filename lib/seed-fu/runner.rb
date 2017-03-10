@@ -20,7 +20,7 @@ module SeedFu
 
     # Run the seed files.
     def run
-      puts "\n== Filtering seed files against regexp: #{@filter.inspect}" if @filter && !SeedFu.quiet
+      SeedFu.puts "\n== Filtering seed files against regexp: #{@filter.inspect}" if @filter && !SeedFu.silence
 
       filenames.each do |filename|
         run_file(filename)
@@ -30,7 +30,7 @@ module SeedFu
     private
 
       def run_file(filename)
-        puts "\n== Seed from #{filename}" unless SeedFu.quiet
+        SeedFu.puts "\n== Seed from #{filename}" unless SeedFu.silence
 
         ActiveRecord::Base.transaction do
           open(filename) do |file|
